@@ -1,4 +1,8 @@
 //Mars Rover
+const prompt = require("prompt");
+
+prompt.start();
+
 const grid = [
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
@@ -76,9 +80,9 @@ function moveForward(rover) {
 
   switch (rover.direction) {
     case "N":
-      rover.y++;
+      rover.y--;
       displayPosition();
-      grid[rover.y - 1][rover.x] = " ";
+      grid[rover.y + 1][rover.x] = " ";
       break;
 
     case "E":
@@ -88,9 +92,9 @@ function moveForward(rover) {
       break;
 
     case "S":
-      rover.y--;
+      rover.y++;
       displayPosition();
-      grid[rover.y + 1][rover.x] = " ";
+      grid[rover.y - 1][rover.x] = " ";
       break;
 
     case "W":
@@ -101,26 +105,53 @@ function moveForward(rover) {
   }
 }
 
-function pilotRover(commands) {
-  if (commands === undefined) {
-    return console.log("Enter a valid command !");
-  } else {
-    for (let i = 0; i < commands.length; i++) {
-      let command = commands[i];
+// prompt.get(
+//   { name: "letters", description: "Enter letters here :" },
+//   function pilotRover(commands) {
+//     if (commands === undefined) {
+//       return console.log("Enter a valid command !");
+//     } else {
+//       for (let i = 0; i < commands.length; i++) {
+//         let command = commands[i];
 
-      if (command === "l") {
-        turnLeft(rover);
-      } else if (command === "r") {
-        turnRight(rover);
-      } else if (command === "f") {
-        moveForward(rover);
+//         if (command === "l") {
+//           turnLeft(rover);
+//         } else if (command === "r") {
+//           turnRight(rover);
+//         } else if (command === "f") {
+//           moveForward(rover);
+//         }
+//       }
+//     }
+//   }
+// );
+
+function pilotRover() {
+  prompt.get(
+    { name: "letters", description: "Enter letters" },
+    function (err, res) {
+      let commands = Object.values(res);
+
+      if (commands === undefined) {
+        return console.log("Enter a valid command !");
+      } else {
+        for (let i = 0; i < commands.length; i++) {
+          let command = commands[i];
+
+          if (command === "l") {
+            turnLeft(rover);
+          } else if (command === "r") {
+            turnRight(rover);
+          } else if (command === "f") {
+            moveForward(rover);
+          }
+        }
       }
+
+      console.table(grid);
+      pilotRover();
     }
-  }
+  );
 }
 
-pilotRover("rff");
-
-console.table(grid);
-
-console.log(rover.travelLog);
+pilotRover();
