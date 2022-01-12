@@ -12,30 +12,70 @@ const grid = [
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 ];
 
-const rover = {
+console.table(grid);
+
+let rover = {
   direction: "N",
+  x: 0,
+  y: 0,
 };
 
-function turnLeft() {
+function turnLeft(rover) {
   switch (rover.direction) {
     case "N":
-      return rover.direction === "W";
+      rover.direction = "W";
       break;
 
     case "W":
-      return rover.direction === "S";
+      rover.direction = "S";
       break;
 
     case "S":
-      return rover.direction === "E";
+      rover.direction = "E";
       break;
 
     case "E":
-      return rover.direction === "N";
+      rover.direction = "N";
       break;
   }
 }
 
-turnLeft();
+function turnRight(rover) {
+  switch (rover.direction) {
+    case "N":
+      rover.direction = "E";
+      break;
 
-console.log(rover);
+    case "E":
+      rover.direction = "S";
+      break;
+
+    case "S":
+      rover.direction = "W";
+      break;
+
+    case "W":
+      rover.direction = "N";
+      break;
+  }
+}
+
+function moveForward(rover) {
+  switch (rover.direction) {
+    case "N":
+      rover.y++;
+      break;
+
+    case "E":
+      rover.x++;
+      break;
+
+    case "S":
+      rover.y--;
+      break;
+
+    case "W":
+      rover.x--;
+      break;
+  }
+}
