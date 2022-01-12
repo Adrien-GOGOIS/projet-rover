@@ -16,28 +16,33 @@ let rover = {
   direction: "N",
   x: 0,
   y: 0,
+  travelLog: [],
 };
+
+function displayPosition() {
+  grid[rover.y][rover.x] = rover.direction;
+}
 
 function turnLeft(rover) {
   switch (rover.direction) {
     case "N":
       rover.direction = "W";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "W":
       rover.direction = "S";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "S":
       rover.direction = "E";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "E":
       rover.direction = "N";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
   }
 }
@@ -46,46 +51,52 @@ function turnRight(rover) {
   switch (rover.direction) {
     case "N":
       rover.direction = "E";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "E":
       rover.direction = "S";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "S":
       rover.direction = "W";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
 
     case "W":
       rover.direction = "N";
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
       break;
   }
 }
 
 function moveForward(rover) {
+  rover.travelLog.push({ x: rover.x, y: rover.y });
+
   switch (rover.direction) {
     case "N":
       rover.y++;
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
+      grid[rover.y - 1][rover.x] = " ";
       break;
 
     case "E":
       rover.x++;
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
+      grid[rover.y][rover.x - 1] = " ";
       break;
 
     case "S":
       rover.y--;
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
+      grid[rover.y + 1][rover.x] = " ";
       break;
 
     case "W":
       rover.x--;
-      grid[rover.x][rover.y] = rover.direction;
+      displayPosition();
+      grid[rover.y][rover.x + 1] = " ";
       break;
   }
 }
@@ -108,7 +119,8 @@ function pilotRover(commands) {
   }
 }
 
-turnRight(rover);
-moveForward(rover);
+pilotRover("rff");
 
 console.table(grid);
+
+console.log(rover.travelLog);
