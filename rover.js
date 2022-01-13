@@ -121,6 +121,46 @@ function moveForward(rover) {
   }
 }
 
+function moveBackward(rover) {
+  rover.travelLog.push({ x: rover.x, y: rover.y });
+
+  if (
+    (rover.x === 0 && rover.direction === "E") ||
+    (rover.x === 9 && rover.direction === "W") ||
+    (rover.y === 0 && rover.direction === "S") ||
+    (rover.y === 9 && rover.direction === "N")
+  ) {
+    return console.log("ERREUR : Le rover est sorti de la grille !");
+  } else {
+    switch (rover.direction) {
+      case "N":
+        rover.y++;
+        displayPosition();
+        grid[rover.y - 1][rover.x] = " ";
+        break;
+
+      case "E":
+        rover.x--;
+        displayPosition();
+        grid[rover.y][rover.x + 1] = " ";
+        break;
+
+      case "S":
+        rover.y--;
+        displayPosition();
+        grid[rover.y + 1][rover.x] = " ";
+        break;
+
+      case "W":
+        rover.x++;
+        displayPosition();
+        grid[rover.y][rover.x - 1] = " ";
+        break;
+    }
+    displayGrid();
+  }
+}
+
 function pilotRover() {
   prompt.get(
     { name: "letters", description: "Enter letters" },
@@ -144,10 +184,12 @@ function pilotRover() {
           turnRight(rover);
         } else if (command === "f") {
           moveForward(rover);
+        } else if (command === "b") {
+          moveBackward(rover);
         }
-      }
 
-      pilotRover();
+        pilotRover();
+      }
     }
   );
 }
