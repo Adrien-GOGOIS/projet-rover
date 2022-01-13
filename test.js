@@ -11,10 +11,32 @@ function catchPokemon(randomId) {
     });
 }
 
-const randomPokemons = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+let pokemonGrid = [[], [], [], [], [], [], [], [], [], []];
 
-catchPokemon(randomPokemons);
+function pushPokemon() {
+  axios
+    .get(`https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=100`)
+    .then((res) => {
+      let pokemons = res.data.results.map((pokemon) => {
+        return pokemon.name;
+      });
 
-console.log("Chargement en cours...");
+      for (let i = 0; i < 10; i++) {
+        for (let k = 0; k < 10; k++) {
+          pokemonGrid[i].push(pokemons[k]);
+        }
+      }
 
-module.exports = { catchPokemon };
+      console.log(pokemonGrid);
+    });
+}
+
+pushPokemon();
+
+// const randomPokemons =
+
+// catchPokemon(Math.floor(Math.random() * (100 - 1 + 1) + 1));
+
+// console.log("Chargement en cours...");
+
+module.exports = { catchPokemon, pushPokemon };
