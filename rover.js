@@ -1,7 +1,6 @@
 //Mars Rover
 const prompt = require("prompt");
-
-const catchPokemon = require("./test.js");
+const axios = require("axios");
 
 prompt.start();
 
@@ -17,6 +16,145 @@ const grid = [
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 ];
+
+let pokemonGrid = [
+  [
+    "bulbasaur",
+    "ivysaur",
+    "venusaur",
+    "charmander",
+    "charmeleon",
+    "charizard",
+    "squirtle",
+    "wartortle",
+    "blastoise",
+    "caterpie",
+  ],
+  [
+    "metapod",
+    "butterfree",
+    "weedle",
+    "kakuna",
+    "beedrill",
+    "pidgey",
+    "pidgeotto",
+    "pidgeot",
+    "rattata",
+    "raticate",
+  ],
+  [
+    "spearow",
+    "fearow",
+    "ekans",
+    "arbok",
+    "pikachu",
+    "raichu",
+    "sandshrew",
+    "sandslash",
+    "nidoran-f",
+    "nidorina",
+  ],
+  [
+    "nidoqueen",
+    "nidoran-m",
+    "nidorino",
+    "nidoking",
+    "clefairy",
+    "clefable",
+    "vulpix",
+    "ninetales",
+    "jigglypuff",
+    "wigglytuff",
+  ],
+  [
+    "zubat",
+    "golbat",
+    "oddish",
+    "gloom",
+    "vileplume",
+    "paras",
+    "parasect",
+    "venonat",
+    "venomoth",
+    "diglett",
+  ],
+  [
+    "dugtrio",
+    "meowth",
+    "persian",
+    "psyduck",
+    "golduck",
+    "mankey",
+    "primeape",
+    "growlithe",
+    "arcanine",
+    "poliwag",
+  ],
+  [
+    "poliwhirl",
+    "poliwrath",
+    "abra",
+    "kadabra",
+    "alakazam",
+    "machop",
+    "machoke",
+    "machamp",
+    "bellsprout",
+    "weepinbell",
+  ],
+  [
+    "victreebel",
+    "tentacool",
+    "tentacruel",
+    "geodude",
+    "graveler",
+    "golem",
+    "ponyta",
+    "rapidash",
+    "slowpoke",
+    "slowbro",
+  ],
+  [
+    "magnemite",
+    "magneton",
+    "farfetchd",
+    "doduo",
+    "dodrio",
+    "seel",
+    "dewgong",
+    "grimer",
+    "muk",
+    "shellder",
+  ],
+  [
+    "cloyster",
+    "gastly",
+    "haunter",
+    "gengar",
+    "onix",
+    "drowzee",
+    "hypno",
+    "krabby",
+    "kingler",
+    "voltorb",
+  ],
+];
+
+/* function pushPokemon() {
+  axios
+    .get(`https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=100`)
+    .then((res) => {
+      let pokemons = res.data.results.map((pokemon) => {
+        return pokemon.name;
+      });
+
+      for (let i = 0; i < 10; i++) {
+        for (let k = 0; k < 10; k++) {
+          pokemonGrid[i].push(pokemons[k]);
+        }
+      }
+    });
+} */
 
 let rover = {
   direction: "N",
@@ -175,6 +313,24 @@ function moveBackward(rover) {
   }
 }
 
+let randomPokemon = "";
+
+function catchPokemon(randomId) {
+  console.log("Chargement en cours...");
+
+  axios
+    .get(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`)
+    .then((res) => {
+      randomPokemon = res.data.name;
+      console.log(`Let\'s find ${randomPokemon} !!`);
+      console.log(pokemonGrid[0][0]);
+      pilotRover();
+    })
+    .catch((err) => {
+      console.log("ERROR!", err);
+    });
+}
+
 // Permet de piloter le rover en fonction de l'ordre de l'utilisateur
 function pilotRover() {
   // On récupère l'entrée de l'utilisateur
@@ -187,14 +343,6 @@ function pilotRover() {
       if (err) {
         console.log("ERREUR");
       }
-
-      /* const validCommands = ["l", "r", "f", "b"];
-
-      for (let j = 0; j < validCommands.length; j++) {
-        if (commands !== validCommands[j]) {
-          return console.log("Enter a valid command !");
-        }
-      } */
 
       // Appelle les fonctions de direction et de déplacement
       for (let i = 0; i < commands.length; i++) {
@@ -211,14 +359,15 @@ function pilotRover() {
         } else {
           console.log("Enter a valid command");
         }
-
-        pilotRover();
       }
+
+      if (pokemonGrid[rover.y][rover.x] === randomPokemon) {
+        return console.log("*** YOU WIN ***");
+      }
+
+      pilotRover();
     }
   );
 }
 
-displayPosition();
-displayGrid();
-
-pilotRover();
+catchPokemon(Math.floor(Math.random() * (100 - 1 + 1) + 1));
