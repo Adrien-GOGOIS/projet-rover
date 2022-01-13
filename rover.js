@@ -1,6 +1,8 @@
 //Mars Rover
 const prompt = require("prompt");
 
+const catchPokemon = require("./test.js");
+
 prompt.start();
 
 const grid = [
@@ -23,14 +25,17 @@ let rover = {
   travelLog: [],
 };
 
+// Affiche la position du rover dans la grille
 function displayPosition() {
   grid[rover.y][rover.x] = rover.direction;
 }
 
+// Affiche la grille dans le terminal
 function displayGrid() {
   console.table(grid);
 }
 
+// Permet de tourner le rover vers la gauche
 function turnLeft(rover) {
   switch (rover.direction) {
     case "N":
@@ -56,6 +61,7 @@ function turnLeft(rover) {
   displayGrid();
 }
 
+// Permet de tourner le rover vers la droite
 function turnRight(rover) {
   switch (rover.direction) {
     case "N":
@@ -81,9 +87,11 @@ function turnRight(rover) {
   displayGrid();
 }
 
+// Permet de faire avance le rover
 function moveForward(rover) {
   rover.travelLog.push({ x: rover.x, y: rover.y });
 
+  // GUARD pour limiter les déplacements dans la grille 10x10
   if (
     (rover.x === 0 && rover.direction === "W") ||
     (rover.x === 9 && rover.direction === "E") ||
@@ -91,6 +99,8 @@ function moveForward(rover) {
     (rover.y === 9 && rover.direction === "S")
   ) {
     return console.log("ERREUR : Le rover est sorti de la grille !");
+
+    // Avance le rover en fonction de sa direction
   } else {
     switch (rover.direction) {
       case "N":
@@ -121,9 +131,11 @@ function moveForward(rover) {
   }
 }
 
+// Permet de faire reculer le rover
 function moveBackward(rover) {
   rover.travelLog.push({ x: rover.x, y: rover.y });
 
+  // GUARD limite les déplacements à la grille 10x10
   if (
     (rover.x === 0 && rover.direction === "E") ||
     (rover.x === 9 && rover.direction === "W") ||
@@ -131,6 +143,8 @@ function moveBackward(rover) {
     (rover.y === 9 && rover.direction === "N")
   ) {
     return console.log("ERREUR : Le rover est sorti de la grille !");
+
+    // Recule le rover en fonction de sa direction
   } else {
     switch (rover.direction) {
       case "N":
@@ -161,20 +175,28 @@ function moveBackward(rover) {
   }
 }
 
+// Permet de piloter le rover en fonction de l'ordre de l'utilisateur
 function pilotRover() {
+  // On récupère l'entrée de l'utilisateur
   prompt.get(
     { name: "letters", description: "Enter letters" },
     function (err, res) {
       let commands = Object.values(res);
 
+      // GUARD
       if (err) {
         console.log("ERREUR");
       }
 
-      if (commands === undefined) {
-        return console.log("Enter a valid command !");
-      }
+      /* const validCommands = ["l", "r", "f", "b"];
 
+      for (let j = 0; j < validCommands.length; j++) {
+        if (commands !== validCommands[j]) {
+          return console.log("Enter a valid command !");
+        }
+      } */
+
+      // Appelle les fonctions de direction et de déplacement
       for (let i = 0; i < commands.length; i++) {
         let command = commands[i];
 
@@ -186,6 +208,8 @@ function pilotRover() {
           moveForward(rover);
         } else if (command === "b") {
           moveBackward(rover);
+        } else {
+          console.log("Enter a valid command");
         }
 
         pilotRover();
@@ -193,5 +217,8 @@ function pilotRover() {
     }
   );
 }
+
+displayPosition();
+displayGrid();
 
 pilotRover();
