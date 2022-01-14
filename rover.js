@@ -17,6 +17,7 @@ const grid = [
   [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 ];
 
+// 2nd grille 'cachée' contenant les 100 pokémons
 let pokemonGrid = [
   [
     "bulbasaur",
@@ -140,22 +141,7 @@ let pokemonGrid = [
   ],
 ];
 
-/* function pushPokemon() {
-  axios
-    .get(`https://pokeapi.co/api/v2/pokemon-species/?offset=0&limit=100`)
-    .then((res) => {
-      let pokemons = res.data.results.map((pokemon) => {
-        return pokemon.name;
-      });
-
-      for (let i = 0; i < 10; i++) {
-        for (let k = 0; k < 10; k++) {
-          pokemonGrid[i].push(pokemons[k]);
-        }
-      }
-    });
-} */
-
+// Position de départ du rover
 let rover = {
   direction: "N",
   x: 0,
@@ -313,17 +299,25 @@ function moveBackward(rover) {
   }
 }
 
+// Choisi un pokemon random parmis les 100
 let randomPokemon = "";
 
 function catchPokemon(randomId) {
+  grid[0][0] = "N";
+  console.table(grid);
   console.log("Chargement en cours...");
 
   axios
     .get(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`)
     .then((res) => {
       randomPokemon = res.data.name;
-      console.log(`Let\'s find ${randomPokemon} !!`);
-      console.log(pokemonGrid[0][0]);
+
+      // Instructions
+      console.log(`Let\'s find ${randomPokemon.toUpperCase()} !!`);
+      console.log(`Enter "l" (left) or "r" (right) to turn the rover`);
+      console.log(`Enter "f" (forward) or "b" (backward) to move the rover`);
+
+      // Lancement du jeu
       pilotRover();
     })
     .catch((err) => {
@@ -335,7 +329,7 @@ function catchPokemon(randomId) {
 function pilotRover() {
   // On récupère l'entrée de l'utilisateur
   prompt.get(
-    { name: "letters", description: "Enter letters" },
+    { name: "letters", description: "Enter a letter" },
     function (err, res) {
       let commands = Object.values(res);
 
@@ -361,8 +355,13 @@ function pilotRover() {
         }
       }
 
+      // Si la position du rover === celle du pokemon random --> Gagné, fin du jeu
       if (pokemonGrid[rover.y][rover.x] === randomPokemon) {
-        return console.log("*** YOU WIN ***");
+        return console.log(
+          `*** YOU CATCH ${randomPokemon.toUpperCase()} *** 
+          \nPokedex is updating... You can put your cap back.
+          \nPosition : X = ${rover.x}; Y = ${rover.y}`
+        );
       }
 
       pilotRover();
